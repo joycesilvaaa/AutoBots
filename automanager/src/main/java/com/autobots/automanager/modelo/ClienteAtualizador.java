@@ -1,5 +1,6 @@
 package com.autobots.automanager.modelo;
 
+import com.autobots.automanager.dto.AtualizarClienteDto;
 import com.autobots.automanager.entidades.Cliente;
 
 public class ClienteAtualizador {
@@ -8,25 +9,22 @@ public class ClienteAtualizador {
 	private DocumentoAtualizador documentoAtualizador = new DocumentoAtualizador();
 	private TelefoneAtualizador telefoneAtualizador = new TelefoneAtualizador();
 
-	private void atualizarDados(Cliente cliente, Cliente atualizacao) {
-		if (!verificador.verificar(atualizacao.getNome())) {
-			cliente.setNome(atualizacao.getNome());
+	private void atualizarDados(Cliente cliente, AtualizarClienteDto atualizacao) {
+		if (!verificador.verificar(atualizacao.nome())) {
+			cliente.setNome(atualizacao.nome());
 		}
-		if (!verificador.verificar(atualizacao.getNomeSocial())) {
-			cliente.setNomeSocial(atualizacao.getNomeSocial());
+		if (!verificador.verificar(atualizacao.nomeSocial())) {
+			cliente.setNomeSocial(atualizacao.nomeSocial());
 		}
-		if (!(atualizacao.getDataCadastro() == null)) {
-			cliente.setDataCadastro(atualizacao.getDataCadastro());
-		}
-		if (!(atualizacao.getDataNascimento() == null)) {
-			cliente.setDataNascimento(atualizacao.getDataNascimento());
+		if (!(atualizacao.dataNascimento() == null)) {
+			cliente.setDataNascimento(atualizacao.dataNascimento());
 		}
 	}
 
-	public void atualizar(Cliente cliente, Cliente atualizacao) {
+	public void atualizar(Cliente cliente, AtualizarClienteDto atualizacao) {
 		atualizarDados(cliente, atualizacao);
-		enderecoAtualizador.atualizar(cliente.getEndereco(), atualizacao.getEndereco());
-		documentoAtualizador.atualizar(cliente.getDocumentos(), atualizacao.getDocumentos());
-		telefoneAtualizador.atualizar(cliente.getTelefones(), atualizacao.getTelefones());
+		enderecoAtualizador.atualizar(cliente.getEndereco(), atualizacao.endereco());
+		documentoAtualizador.atualizar(cliente.getDocumentos(), atualizacao.documentos());
+		telefoneAtualizador.atualizar(cliente.getTelefones(), atualizacao.telefones());
 	}
 }

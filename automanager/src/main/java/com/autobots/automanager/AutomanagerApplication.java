@@ -1,7 +1,10 @@
 package com.autobots.automanager;
 
-import java.util.Calendar;
+import java.time.LocalDate;
 
+import com.autobots.automanager.repositorios.DocumentoRepositorio;
+import com.autobots.automanager.repositorios.EnderecoRepositorio;
+import com.autobots.automanager.repositorios.TelefoneRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -14,6 +17,7 @@ import com.autobots.automanager.entidades.Documento;
 import com.autobots.automanager.entidades.Endereco;
 import com.autobots.automanager.entidades.Telefone;
 import com.autobots.automanager.repositorios.ClienteRepositorio;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootApplication
 public class AutomanagerApplication {
@@ -25,24 +29,37 @@ public class AutomanagerApplication {
 	@Component
 	public static class Runner implements ApplicationRunner {
 		@Autowired
-		public ClienteRepositorio repositorio;
+		public ClienteRepositorio clienteRepositorio;
+
+		@Autowired
+		public TelefoneRepositorio telefoneRepositorio;
+
+		@Autowired
+		public EnderecoRepositorio enderecoRepositorio;
+
+		@Autowired
+		public DocumentoRepositorio documentoRepositorio;
 
 		@Override
+		@Transactional
 		public void run(ApplicationArguments args) throws Exception {
-			Calendar calendario = Calendar.getInstance();
-			calendario.set(2002, 05, 15);
+
+			LocalDate dataNascimento = LocalDate.of(2002, 6, 15);
+			LocalDate dataCadastro = LocalDate.now(); // Data atual
 
 			Cliente cliente = new Cliente();
 			cliente.setNome("Pedro Alcântara de Bragança e Bourbon");
-			cliente.setDataCadastro(Calendar.getInstance().getTime());
-			cliente.setDataNascimento(calendario.getTime());
+			cliente.setDataCadastro(dataCadastro);
+			cliente.setDataNascimento(dataNascimento);
 			cliente.setNomeSocial("Dom Pedro");
-			
+			clienteRepositorio.save(cliente);
+
 			Telefone telefone = new Telefone();
 			telefone.setDdd("21");
 			telefone.setNumero("981234576");
-			cliente.getTelefones().add(telefone);
-			
+			telefone.setCliente(cliente);
+			telefoneRepositorio.save(telefone);
+
 			Endereco endereco = new Endereco();
 			endereco.setEstado("Rio de Janeiro");
 			endereco.setCidade("Rio de Janeiro");
@@ -50,22 +67,28 @@ public class AutomanagerApplication {
 			endereco.setRua("Avenida Atlântica");
 			endereco.setNumero("1702");
 			endereco.setCodigoPostal("22021001");
-			endereco.setInformacoesAdicionais("Hotel Copacabana palace");
-			cliente.setEndereco(endereco);
-			
+			endereco.setInformacoesAdicionais("Hotel Copacabana Palace");
+			endereco.setCliente(cliente);
+			enderecoRepositorio.save(endereco);
+
 			Documento rg = new Documento();
 			rg.setTipo("RG");
 			rg.setNumero("1500");
-			
+			rg.setCliente(cliente);
+			documentoRepositorio.save(rg);
+
 			Documento cpf = new Documento();
-			cpf.setTipo("RG");
+			cpf.setTipo("CPF");
 			cpf.setNumero("00000000001");
-			
+			cpf.setCliente(cliente);
+			documentoRepositorio.save(cpf);
+
+
+			cliente.getTelefones().add(telefone);
 			cliente.getDocumentos().add(rg);
 			cliente.getDocumentos().add(cpf);
-			
-			repositorio.save(cliente);
+
+			clienteRepositorio.save(cliente);
 		}
 	}
-
 }

@@ -1,5 +1,6 @@
 package com.autobots.automanager.entidades;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,14 +27,16 @@ public class Cliente {
 	@Column
 	private String nomeSocial;
 	@Column
-	private Date dataNascimento;
+	private LocalDate dataNascimento;
 	@Column
-	private Date dataCadastro;
-	@OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+	private LocalDate dataCadastro;
+	@OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Documento> documentos = new ArrayList<>();
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+
+	@OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Endereco endereco;
-	@OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+
+	@OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Telefone> telefones = new ArrayList<>();
 
 }
