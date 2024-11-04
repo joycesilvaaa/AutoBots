@@ -22,15 +22,16 @@ import org.springframework.web.bind.annotation.RestController;
 import com.autobots.automanager.entidades.Cliente;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/cliente")
-public class ClienteControle {
+public class ClienteController {
 
 	@Autowired
 	private ClienteService clienteService;
 
-	@GetMapping("/cliente/{id}")
+	@GetMapping("/{id}")
 	public ResponseEntity<?> obterCliente(@PathVariable long id) {
 		try {
 			VerClienteDto cliente = clienteService.verCliente(id);
@@ -47,7 +48,7 @@ public class ClienteControle {
 		}
 	}
 
-	@GetMapping("/clientes")
+	@GetMapping("/lista/todos")
 	public ResponseEntity<?> obterClientes() {
 		try {
 			List<VerClienteDto> clienteDtos = clienteService.listaClientes();
@@ -61,18 +62,9 @@ public class ClienteControle {
 		}
 	}
 
-	@PostMapping("/cadastro")
-	public ResponseEntity<?> cadastrarCliente(@RequestBody CriarClienteDto dadosNovoCliente) {
+	@PostMapping("/cadastrar")
+	public ResponseEntity<?> cadastrarCliente(@RequestBody @Valid CriarClienteDto clienteDto) {
 		try {
-			CriarClienteDto clienteDto = new CriarClienteDto(
-					dadosNovoCliente.nome(),
-					dadosNovoCliente.nomeSocial(),
-					dadosNovoCliente.dataNascimento(),
-					dadosNovoCliente.documentos(),
-					dadosNovoCliente.endereco(),
-					dadosNovoCliente.telefones()
-			);
-
 			Cliente clienteCadastrado = clienteService.cadastrarCliente(clienteDto);
 			return ResponseEntity.status(HttpStatus.CREATED)
 					.body("Cliente Cadastrado.");
@@ -86,18 +78,9 @@ public class ClienteControle {
 	}
 
 	@PutMapping("/atualizar")
-	public ResponseEntity<?> atualizarCliente(@RequestBody AtualizarClienteDto dadosAtualizados) {
+	public ResponseEntity<?> atualizarCliente(@RequestBody @Valid AtualizarClienteDto atualizarClienteDto) {
 		try{
-			AtualizarClienteDto atualizarClienteDto = new AtualizarClienteDto(
-					dadosAtualizados.id(),
-					dadosAtualizados.nome(),
-					dadosAtualizados.nomeSocial(),
-					dadosAtualizados.dataNascimento(),
-					dadosAtualizados.documentos(),
-					dadosAtualizados.endereco(),
-					dadosAtualizados.telefones()
-			);
-			Cliente clienteAtualizado = clienteService.atualizarCliente(dadosAtualizados); // Retorna o cliente atualizado
+			Cliente clienteAtualizado = clienteService.atualizarCliente(atualizarClienteDto);
 			return ResponseEntity.status(HttpStatus.OK)
 					.body(clienteAtualizado);
 		}catch (EntityNotFoundException e) {

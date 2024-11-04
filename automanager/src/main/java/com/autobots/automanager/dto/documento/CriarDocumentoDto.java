@@ -1,7 +1,9 @@
 package com.autobots.automanager.dto.documento;
 
+import javax.validation.constraints.NotBlank;
+
 public record CriarDocumentoDto(
-        String tipo,
-        String numero
+        @NotBlank String tipo,
+        @NotBlank String numero
 ) {
 }

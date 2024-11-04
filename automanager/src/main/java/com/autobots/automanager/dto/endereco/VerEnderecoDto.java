@@ -1,5 +1,9 @@
 package com.autobots.automanager.dto.endereco;
 
+import org.springframework.hateoas.Link;
+
+import java.util.List;
+
 public record VerEnderecoDto(
         Long id,
         String estado,
@@ -8,6 +12,7 @@ public record VerEnderecoDto(
         String rua,
         String numero,
         String codigoPostal,
-        String informacoesAdicionais
+        String informacoesAdicionais,
+        List<Link> links
 ) {
 }

@@ -3,7 +3,6 @@ package com.autobots.automanager.controles;
 import com.autobots.automanager.dto.telefone.CriarTelefoneDto;
 import com.autobots.automanager.dto.telefone.VerTelefoneDto;
 import com.autobots.automanager.entidades.Telefone;
-import com.autobots.automanager.repositorios.TelefoneRepositorio;
 import com.autobots.automanager.service.TelefoneService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -12,8 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/telefone")
@@ -58,10 +57,10 @@ public class TelefoneController {
         }
     }
 
-    @PostMapping("/cadastro/{id}")
-    public ResponseEntity<?> cadastrarTelefone(@PathVariable long id, @RequestBody CriarTelefoneDto novoTelefone){
+    @PostMapping("/cadastro/{clienteId}")
+    public ResponseEntity<?> cadastrarTelefone(@PathVariable long clienteId, @RequestBody @Valid CriarTelefoneDto criarTelefoneDto){
         try {
-            Telefone telefone = telefoneService.cadastrarTelefone(id, new CriarTelefoneDto(novoTelefone.ddd(), novoTelefone.numero()));
+            Telefone telefone = telefoneService.cadastrarTelefone(clienteId,criarTelefoneDto);
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body("Telefone Adicionado");
         } catch (DataIntegrityViolationException e) {

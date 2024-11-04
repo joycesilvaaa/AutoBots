@@ -1,12 +1,14 @@
 package com.autobots.automanager.dto.endereco;
 
+import javax.validation.constraints.NotBlank;
+
 public record CriarEnderecoDto(
-        String estado,
-        String cidade,
-        String bairro,
-        String rua,
-        String numero,
-        String codigoPostal,
-        String informacoesAdicionais
+        @NotBlank String estado,
+        @NotBlank String cidade,
+        @NotBlank String bairro,
+        @NotBlank String rua,
+        @NotBlank String numero,
+        @NotBlank String codigoPostal,
+        @NotBlank String informacoesAdicionais
 ) {
 }

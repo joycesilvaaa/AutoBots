@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
 import java.util.List;
 
 
@@ -23,10 +24,10 @@ public class DocumentoController {
     @Autowired
     private DocumentoService documentoService;
 
-    @PostMapping("/cadastrar/{id}")
-    public ResponseEntity<?> cadastrarDocumento(@PathVariable long id, @RequestBody CriarDocumentoDto novoDocumento) {
+    @PostMapping("/cadastrar/{clienteId}")
+    public ResponseEntity<?> cadastrarDocumento(@PathVariable long clienteId, @RequestBody @Valid CriarDocumentoDto criarDocumentoDto) {
         try {
-            Documento documentoCadastrado = documentoService.cadastrarDocumento(id, new CriarDocumentoDto(novoDocumento.tipo(), novoDocumento.numero()));
+            Documento documentoCadastrado = documentoService.cadastrarDocumento(clienteId, criarDocumentoDto);
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body("Documento criado.");
         } catch (EntityNotFoundException e) {
@@ -75,8 +76,6 @@ public class DocumentoController {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
-
 
     @DeleteMapping("/excluir/{clienteId}/{documentoId}")
     public ResponseEntity<?> excluirDocumento(@PathVariable Long clienteId, @PathVariable Long documentoId) {

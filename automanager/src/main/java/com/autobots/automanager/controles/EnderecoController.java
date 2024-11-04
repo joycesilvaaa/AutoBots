@@ -1,10 +1,8 @@
 package com.autobots.automanager.controles;
 
-import com.autobots.automanager.dto.documento.CriarDocumentoDto;
-import com.autobots.automanager.dto.documento.VerDocumentoDto;
 import com.autobots.automanager.dto.endereco.CriarEnderecoDto;
 import com.autobots.automanager.dto.endereco.VerEnderecoDto;
-import com.autobots.automanager.entidades.Documento;
+
 import com.autobots.automanager.entidades.Endereco;
 import com.autobots.automanager.service.EnderecoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
 import java.util.List;
+
 @RestController
 @RequestMapping("/endereco")
 public class EnderecoController {
@@ -22,20 +22,10 @@ public class EnderecoController {
     @Autowired
     private EnderecoService enderecoService;
 
-    @PostMapping("/cadastrar/{id}")
-    public ResponseEntity<?> cadastrarEndereco(@PathVariable long id, @RequestBody CriarEnderecoDto novoEndereco) {
+    @PostMapping("/cadastrar/{clienteId}")
+    public ResponseEntity<?> cadastrarEndereco(@PathVariable long clienteId, @RequestBody @Valid CriarEnderecoDto enderecoDto) {
         try {
-            CriarEnderecoDto enderecoDto = new CriarEnderecoDto(
-                    novoEndereco.estado(),
-                    novoEndereco.cidade(),
-                    novoEndereco.bairro(),
-                    novoEndereco.rua(),
-                    novoEndereco.numero(),
-                    novoEndereco.codigoPostal(),
-                    novoEndereco.informacoesAdicionais()
-            );
-
-            Endereco enderecoCadastrado = enderecoService.cadastrarEndereco(id, enderecoDto);
+            Endereco enderecoCadastrado = enderecoService.cadastrarEndereco(clienteId, enderecoDto);
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body("Endereço Adicionado.");
         } catch (EntityNotFoundException e) {
@@ -84,8 +74,6 @@ public class EnderecoController {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
-
 
     @DeleteMapping("/excluir/{clienteId}/{documentoId}")
     public ResponseEntity<?> excluirEndereco(@PathVariable Long clienteId, @PathVariable Long documentoId) {

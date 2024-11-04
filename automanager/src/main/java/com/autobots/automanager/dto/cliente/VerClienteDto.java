@@ -3,6 +3,7 @@ package com.autobots.automanager.dto.cliente;
 import com.autobots.automanager.entidades.Documento;
 import com.autobots.automanager.entidades.Endereco;
 import com.autobots.automanager.entidades.Telefone;
+import org.springframework.hateoas.Link;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -14,6 +15,7 @@ public record VerClienteDto(
         LocalDate dataNascimento,
         List<Documento> documentos,
         Endereco endereco,
-        List<Telefone> telefones
+        List<Telefone> telefones,
+        List<Link> links
 ) {
 }

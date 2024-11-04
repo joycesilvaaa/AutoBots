@@ -1,7 +1,9 @@
 package com.autobots.automanager.dto.telefone;
 
+import javax.validation.constraints.NotBlank;
+
 public record CriarTelefoneDto(
-        String ddd,
-        String numero
+        @NotBlank String ddd,
+        @NotBlank String numero
 ) {
 }

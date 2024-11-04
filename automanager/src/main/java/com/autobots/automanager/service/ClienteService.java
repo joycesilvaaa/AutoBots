@@ -1,6 +1,7 @@
 package com.autobots.automanager.service;
 import com.autobots.automanager.dto.cliente.AtualizarClienteDto;
 import com.autobots.automanager.dto.cliente.VerClienteDto;
+import com.autobots.automanager.modelo.AdicionadorLinkCliente;
 import com.autobots.automanager.modelo.ClienteAtualizador;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,8 @@ public class ClienteService {
     private ClienteRepositorio clienteRepositorio;
     @Autowired
     private ClienteSelecionador clienteSelecionador;
+    @Autowired
+    private AdicionadorLinkCliente adicionadorLink;
 
     public Cliente cadastrarCliente(CriarClienteDto clienteDto){
         try{
@@ -69,6 +72,7 @@ public class ClienteService {
     public List<VerClienteDto> listaClientes(){
         try{
             List<Cliente> clientes = clienteRepositorio.findAll();
+            clientes.forEach(cliente -> adicionadorLink.adicionarLink(cliente));
             return clientes.stream()
                     .map(cliente -> new VerClienteDto(
                             cliente.getId(),
@@ -77,7 +81,8 @@ public class ClienteService {
                             cliente.getDataNascimento(),
                             cliente.getDocumentos(),
                             cliente.getEndereco(),
-                            cliente.getTelefones()
+                            cliente.getTelefones(),
+                            cliente.getLinks().toList()
                     ))
                     .collect(Collectors.toList());
         }catch (DataIntegrityViolationException e) {
@@ -97,6 +102,8 @@ public class ClienteService {
                 throw new EntityNotFoundException("Cliente não encontrado com ID: " + id);
             }
 
+            adicionadorLink.adicionarLink(cliente);
+
             return new VerClienteDto(
                     cliente.getId(),
                     cliente.getNome(),
@@ -104,7 +111,8 @@ public class ClienteService {
                     cliente.getDataNascimento(),
                     cliente.getDocumentos(),
                     cliente.getEndereco(),
-                    cliente.getTelefones()
+                    cliente.getTelefones(),
+                    cliente.getLinks().toList()
             );
         }catch (DataIntegrityViolationException e) {
             logger.error("Erro de integridade de dados ao visualizar cliente: {}", e.getMessage());

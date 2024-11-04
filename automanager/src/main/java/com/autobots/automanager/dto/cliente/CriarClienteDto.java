@@ -4,15 +4,17 @@ import com.autobots.automanager.entidades.Documento;
 import com.autobots.automanager.entidades.Endereco;
 import com.autobots.automanager.entidades.Telefone;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 
 public record CriarClienteDto(
-        String nome,
-        String nomeSocial,
-        LocalDate dataNascimento,
-        List<Documento> documentos,
-        Endereco endereco,
-        List<Telefone> telefones
+        @NotBlank String nome,
+        @NotBlank String nomeSocial,
+        @NotNull LocalDate dataNascimento,
+        @NotNull List<Documento> documentos,
+        @NotNull Endereco endereco,
+        @NotNull List<Telefone> telefones
 ) {
 }
