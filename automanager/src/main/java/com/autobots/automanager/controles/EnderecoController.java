@@ -23,19 +23,10 @@ public class EnderecoController {
     private EnderecoService enderecoService;
 
     @PostMapping("/cadastrar/{id}")
-    public ResponseEntity<?> cadastrarEndereco(@PathVariable long id, @RequestBody CriarEnderecoDto novoEndereco) {
+    public ResponseEntity<?> cadastrarEndereco(@PathVariable long id, @RequestBody CriarEnderecoDto criarEnderecoDto) {
         try {
-            CriarEnderecoDto enderecoDto = new CriarEnderecoDto(
-                    novoEndereco.estado(),
-                    novoEndereco.cidade(),
-                    novoEndereco.bairro(),
-                    novoEndereco.rua(),
-                    novoEndereco.numero(),
-                    novoEndereco.codigoPostal(),
-                    novoEndereco.informacoesAdicionais()
-            );
 
-            Endereco enderecoCadastrado = enderecoService.cadastrarEndereco(id, enderecoDto);
+            Endereco enderecoCadastrado = enderecoService.cadastrarEndereco(id, criarEnderecoDto);
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body("Endereço Adicionado.");
         } catch (EntityNotFoundException e) {
@@ -84,8 +75,6 @@ public class EnderecoController {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
-
 
     @DeleteMapping("/excluir/{clienteId}/{documentoId}")
     public ResponseEntity<?> excluirEndereco(@PathVariable Long clienteId, @PathVariable Long documentoId) {

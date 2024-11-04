@@ -59,9 +59,9 @@ public class TelefoneController {
     }
 
     @PostMapping("/cadastro/{id}")
-    public ResponseEntity<?> cadastrarTelefone(@PathVariable long id, @RequestBody CriarTelefoneDto novoTelefone){
+    public ResponseEntity<?> cadastrarTelefone(@PathVariable long id, @RequestBody CriarTelefoneDto criarTelefoneDto){
         try {
-            Telefone telefone = telefoneService.cadastrarTelefone(id, new CriarTelefoneDto(novoTelefone.ddd(), novoTelefone.numero()));
+            Telefone telefone = telefoneService.cadastrarTelefone(id, criarTelefoneDto);
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body("Telefone Adicionado");
         } catch (DataIntegrityViolationException e) {

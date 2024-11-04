@@ -62,17 +62,8 @@ public class ClienteControle {
 	}
 
 	@PostMapping("/cadastro")
-	public ResponseEntity<?> cadastrarCliente(@RequestBody CriarClienteDto dadosNovoCliente) {
+	public ResponseEntity<?> cadastrarCliente(@RequestBody CriarClienteDto clienteDto) {
 		try {
-			CriarClienteDto clienteDto = new CriarClienteDto(
-					dadosNovoCliente.nome(),
-					dadosNovoCliente.nomeSocial(),
-					dadosNovoCliente.dataNascimento(),
-					dadosNovoCliente.documentos(),
-					dadosNovoCliente.endereco(),
-					dadosNovoCliente.telefones()
-			);
-
 			Cliente clienteCadastrado = clienteService.cadastrarCliente(clienteDto);
 			return ResponseEntity.status(HttpStatus.CREATED)
 					.body("Cliente Cadastrado.");
@@ -88,16 +79,7 @@ public class ClienteControle {
 	@PutMapping("/atualizar")
 	public ResponseEntity<?> atualizarCliente(@RequestBody AtualizarClienteDto dadosAtualizados) {
 		try{
-			AtualizarClienteDto atualizarClienteDto = new AtualizarClienteDto(
-					dadosAtualizados.id(),
-					dadosAtualizados.nome(),
-					dadosAtualizados.nomeSocial(),
-					dadosAtualizados.dataNascimento(),
-					dadosAtualizados.documentos(),
-					dadosAtualizados.endereco(),
-					dadosAtualizados.telefones()
-			);
-			Cliente clienteAtualizado = clienteService.atualizarCliente(dadosAtualizados); // Retorna o cliente atualizado
+			Cliente clienteAtualizado = clienteService.atualizarCliente(dadosAtualizados);
 			return ResponseEntity.status(HttpStatus.OK)
 					.body(clienteAtualizado);
 		}catch (EntityNotFoundException e) {

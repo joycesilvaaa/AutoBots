@@ -24,9 +24,9 @@ public class DocumentoController {
     private DocumentoService documentoService;
 
     @PostMapping("/cadastrar/{id}")
-    public ResponseEntity<?> cadastrarDocumento(@PathVariable long id, @RequestBody CriarDocumentoDto novoDocumento) {
+    public ResponseEntity<?> cadastrarDocumento(@PathVariable long id, @RequestBody CriarDocumentoDto criarDocumentoDto) {
         try {
-            Documento documentoCadastrado = documentoService.cadastrarDocumento(id, new CriarDocumentoDto(novoDocumento.tipo(), novoDocumento.numero()));
+            Documento documentoCadastrado = documentoService.cadastrarDocumento(id,criarDocumentoDto);
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body("Documento criado.");
         } catch (EntityNotFoundException e) {
