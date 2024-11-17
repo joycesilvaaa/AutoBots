@@ -95,4 +95,20 @@ public class ControleEmpresa {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
+
+    @PutMapping("/{userId}/{empresaId}")
+    public ResponseEntity<?> incluiUsuario(@PathVariable Long userId, @PathVariable Long empresaId){
+        try{
+            servicoEmpresa.adicionarUsuario(userId,empresaId);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body("Usuario Associado");
+        } catch (DataIntegrityViolationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Dados inválidos ao realizar inclusão empresa: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro inesperado: " + e.getMessage());
+        }
+    }
+
 }
