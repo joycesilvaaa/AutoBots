@@ -1,12 +1,15 @@
 package com.autobots.automanager.modelo.atualizadores;
 
 import com.autobots.automanager.entitades.Documento;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 
-
+@Component
 public class DocumentoAtualizador {
+    @Autowired
     private StringVerificadorNulo verificador = new StringVerificadorNulo();
 
     public void atualizar(Documento documento, Documento atualizacao) {

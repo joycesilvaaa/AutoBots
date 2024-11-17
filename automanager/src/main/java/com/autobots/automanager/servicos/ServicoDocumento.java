@@ -3,6 +3,7 @@ package com.autobots.automanager.servicos;
 import com.autobots.automanager.entitades.Documento;
 import com.autobots.automanager.entitades.Usuario;
 import com.autobots.automanager.modelo.adicionadores.AdicionadorLinkDocumento;
+import com.autobots.automanager.modelo.atualizadores.DocumentoAtualizador;
 import com.autobots.automanager.repositorios.RepositorioDocumento;
 import com.autobots.automanager.repositorios.RepositorioUsuario;
 import org.slf4j.Logger;
@@ -27,6 +28,9 @@ public class ServicoDocumento {
 
     @Autowired
     private AdicionadorLinkDocumento adicionadorLinkDocumento;
+
+    @Autowired
+    private DocumentoAtualizador documentoAtualizador;
 
     public Documento cadastrarDocumento(Long id, Documento documento){
         try{
@@ -54,26 +58,13 @@ public class ServicoDocumento {
 
     public Documento editarDocumento(Long id, Documento documentoUpdate){
         try{
-            Usuario usuario = repositorioUsuario.findById(id)
-                    .orElseThrow(() ->{
-                        logger.error("Usuario com id {} não encontrado.", id);
-                        return new EntityNotFoundException("Usuario não encontrado");
-                    });
-            Documento documento = repositorioDocumento.findById(documentoUpdate.getId())
+            Documento documento = repositorioDocumento.findById(id)
                     .orElseThrow(() ->{
                         logger.error("Documento com id {} não encontrado.", documentoUpdate.getId());
                         return new EntityNotFoundException("Documento não encontrado");
                     });
-            if(documentoUpdate.getDataEmissao() != null){
-                documento.setDataEmissao(documentoUpdate.getDataEmissao());
-            }
-            if(documentoUpdate.getTipo() != null){
-                documento.setTipo(documentoUpdate.getTipo());
-            }
-            if(documentoUpdate.getNumero() != null){
-                documento.setNumero(documentoUpdate.getNumero());
-            }
-            repositorioUsuario.save(usuario);
+            documentoAtualizador.atualizar(documento, documentoUpdate);
+            repositorioDocumento.save(documento);
             return documento;
         }catch (DataIntegrityViolationException e) {
             logger.error("Erro de integridade de dados ao cadastrar documento: {}", e.getMessage());

@@ -4,6 +4,7 @@ import com.autobots.automanager.entitades.Email;
 import com.autobots.automanager.entitades.Mercadoria;
 import com.autobots.automanager.entitades.Usuario;
 import com.autobots.automanager.modelo.adicionadores.AdicionadorLinkEmail;
+import com.autobots.automanager.modelo.atualizadores.EmailAtualizador;
 import com.autobots.automanager.repositorios.RepositorioEmail;
 import com.autobots.automanager.repositorios.RepositorioUsuario;
 import org.slf4j.Logger;
@@ -29,6 +30,9 @@ public class ServicoEmail {
     @Autowired
     private AdicionadorLinkEmail adicionadorLinkEmail;
 
+    @Autowired
+    private EmailAtualizador emailAtualizador;
+
     public Email cadastrarEmail(Long id ,Email email){
         try {
             Usuario usuario = repositorioUsuario.findById(id)
@@ -52,20 +56,13 @@ public class ServicoEmail {
 
     public Email editarEmail(Long id ,Email emailUpdate){
         try {
-            Usuario usuario = repositorioUsuario.findById(id)
+            Email email = repositorioEmail.findById(id)
                     .orElseThrow(() ->{
-                        logger.error("Usuario com id {} não encontrado.", id);
-                        return new EntityNotFoundException("Usuario não encontrado");
-                    });
-            Email email = repositorioEmail.findById(emailUpdate.getId())
-                    .orElseThrow(() ->{
-                        logger.error("E-mail com id {} não encontrado.", emailUpdate.getId());
+                        logger.error("E-mail com id {} não encontrado.", id);
                         return new EntityNotFoundException("E-mail não encontrado");
                     });
-            if(emailUpdate.getEndereco() != null){
-                email.setEndereco(emailUpdate.getEndereco());
-            }
-            repositorioUsuario.save(usuario);
+            emailAtualizador.atualizar(email, emailUpdate);
+            repositorioEmail.save(email);
             return email;
         } catch (DataIntegrityViolationException e) {
             logger.error("Erro de integridade de dados ao editar E-mail: {}", e.getMessage());
