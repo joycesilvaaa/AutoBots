@@ -4,6 +4,7 @@ import com.autobots.automanager.entitades.Empresa;
 import com.autobots.automanager.entitades.Telefone;
 import com.autobots.automanager.entitades.Usuario;
 import com.autobots.automanager.modelo.adicionadores.AdicionadorLinkTelefone;
+import com.autobots.automanager.modelo.atualizadores.TelefoneAtualizador;
 import com.autobots.automanager.repositorios.RepositorioEmpresa;
 import com.autobots.automanager.repositorios.RepositorioTelefone;
 import com.autobots.automanager.repositorios.RepositorioUsuario;
@@ -32,6 +33,9 @@ public class ServicoTelefone {
 
     @Autowired
     private AdicionadorLinkTelefone adicionadorLinkTelefone;
+
+    @Autowired
+    private TelefoneAtualizador telefoneAtualizador;
 
     public Telefone cadastrarTelefoneUsuario(Long id, Telefone telefone){
         try{
@@ -75,6 +79,23 @@ public class ServicoTelefone {
         }
     }
 
+    public Telefone editarTelefone(Long id, Telefone telefoneUpdate){
+        try{
+            Telefone telefone = repositorioTelefone.findById(id)
+                    .orElseThrow(()->{
+                        logger.error("Telefone com id {} não encontrado.", id);
+                        return new EntityNotFoundException("Telefone não encontrada");
+                    });
+            telefoneAtualizador.atualizar(telefone, telefoneUpdate);
+            return repositorioTelefone.save(telefone);
+        }catch (DataIntegrityViolationException e) {
+            logger.error("Erro de integridade de dados ao editar novo telefone: {}", e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            logger.error("Erro ao editar novo telefone: {}", e.getMessage());
+            throw e;
+        }
+    }
     public List<Telefone> listagemTelefones(){
         try{
             List<Telefone> telefones = repositorioTelefone.findAll();

@@ -24,10 +24,10 @@ public class ControleTelefone {
         try{
             Telefone telefone = servicoTelefone.cadastrarTelefoneUsuario(id, telefoneDados);
             return ResponseEntity.status(HttpStatus.CREATED)
-                    .body("Venda Cadastrada");
+                    .body("Telefone Cadastrada");
         }catch (DataIntegrityViolationException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Dados inválidos ao cadastrar venda: " + e.getMessage());
+                    .body("Dados inválidos ao cadastrar Telefone: " + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Erro inesperado: " + e.getMessage());
@@ -39,10 +39,25 @@ public class ControleTelefone {
         try{
             Telefone telefone = servicoTelefone.cadastrarTelefoneEmpresa(id, telefoneDados);
             return ResponseEntity.status(HttpStatus.CREATED)
-                    .body("Venda Cadastrada");
+                    .body("Telefone Cadastrada");
         }catch (DataIntegrityViolationException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Dados inválidos ao cadastrar venda: " + e.getMessage());
+                    .body("Dados inválidos ao cadastrar Telefone: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro inesperado: " + e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> editaTelefone(@PathVariable Long id,@RequestBody Telefone telefoneUpdate){
+        try{
+            Telefone telefone = servicoTelefone.editarTelefone(id,telefoneUpdate);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body("Telefone Atualizado.");
+        }catch (DataIntegrityViolationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Dados inválidos ao cadastrar telefone: " + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Erro inesperado: " + e.getMessage());

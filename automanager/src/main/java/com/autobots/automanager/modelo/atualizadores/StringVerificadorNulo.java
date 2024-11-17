@@ -1,5 +1,8 @@
 package com.autobots.automanager.modelo.atualizadores;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class StringVerificadorNulo {
 
     public boolean verificar(String dado) {

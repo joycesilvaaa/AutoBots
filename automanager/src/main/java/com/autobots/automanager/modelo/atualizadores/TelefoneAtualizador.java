@@ -1,10 +1,13 @@
 package com.autobots.automanager.modelo.atualizadores;
 
 import com.autobots.automanager.entitades.Telefone;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
-
+@Component
 public class TelefoneAtualizador {
+    @Autowired
         private StringVerificadorNulo verificador = new StringVerificadorNulo();
 
         public void atualizar(Telefone telefone, Telefone atualizacao) {
