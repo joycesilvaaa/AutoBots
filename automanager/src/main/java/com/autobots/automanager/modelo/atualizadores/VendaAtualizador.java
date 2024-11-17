@@ -1,6 +1,6 @@
 package com.autobots.automanager.modelo.atualizadores;
 
-import com.autobots.automanager.dto.usuario.VendaDto;
+import com.autobots.automanager.dto.venda.VendaDto;
 import com.autobots.automanager.entitades.Mercadoria;
 import com.autobots.automanager.entitades.Servico;
 import com.autobots.automanager.entitades.Usuario;

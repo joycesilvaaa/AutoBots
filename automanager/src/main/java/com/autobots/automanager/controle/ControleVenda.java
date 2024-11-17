@@ -1,7 +1,6 @@
 package com.autobots.automanager.controle;
 
-import com.autobots.automanager.dto.usuario.VendaDto;
-import com.autobots.automanager.entitades.Empresa;
+import com.autobots.automanager.dto.venda.VendaDto;
 import com.autobots.automanager.entitades.Venda;
 import com.autobots.automanager.servicos.ServicoVenda;
 import org.springframework.beans.factory.annotation.Autowired;

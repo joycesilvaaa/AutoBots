@@ -1,9 +1,11 @@
 package com.autobots.automanager.servicos;
 
+import com.autobots.automanager.entitades.Usuario;
 import com.autobots.automanager.entitades.Veiculo;
 import com.autobots.automanager.entitades.Venda;
 import com.autobots.automanager.modelo.adicionadores.AdicionadorLinkVeiculo;
 import com.autobots.automanager.modelo.atualizadores.VeiculoAtualizador;
+import com.autobots.automanager.repositorios.RepositorioUsuario;
 import com.autobots.automanager.repositorios.RepositorioVeiculo;
 import com.autobots.automanager.repositorios.RepositorioVenda;
 import org.slf4j.Logger;
@@ -32,8 +34,17 @@ public class ServicoVeiculo {
     @Autowired
     private VeiculoAtualizador veiculoAtualizador;
 
-    public Veiculo cadastrarVeiculo(Veiculo veiculo){
+    @Autowired
+    private RepositorioUsuario repositorioUsuario;
+
+    public Veiculo cadastrarVeiculo(Long id,Veiculo veiculo){
         try{
+            Usuario usuario = repositorioUsuario.findById(id)
+                    .orElseThrow(() -> {
+                        logger.error("Usuário com id {} não encontrado.", id);
+                        return new EntityNotFoundException("Usuário não encontrado");
+                    });
+            veiculo.setProprietario(usuario);
             return repositorioVeiculo.save(veiculo);
         }catch (DataIntegrityViolationException e) {
             logger.error("Erro de integridade de dados ao cadastrar novo veiculo: {}", e.getMessage());

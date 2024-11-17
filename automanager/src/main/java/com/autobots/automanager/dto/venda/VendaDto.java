@@ -1,4 +1,4 @@
-package com.autobots.automanager.dto.usuario;
+package com.autobots.automanager.dto.venda;
 
 import java.util.List;
 

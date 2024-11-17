@@ -1,6 +1,6 @@
 package com.autobots.automanager.servicos;
 
-import com.autobots.automanager.dto.usuario.VendaDto;
+import com.autobots.automanager.dto.venda.VendaDto;
 import com.autobots.automanager.entitades.Empresa;
 import com.autobots.automanager.entitades.Veiculo;
 import com.autobots.automanager.entitades.Venda;

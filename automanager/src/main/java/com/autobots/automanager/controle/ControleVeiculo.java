@@ -18,10 +18,10 @@ public class ControleVeiculo {
     @Autowired
     private ServicoVeiculo servicoVeiculo;
 
-    @PostMapping("/criar")
-    public ResponseEntity<?> cadastrarVeiculo(@RequestBody Veiculo veiculoDados){
+    @PostMapping("/criar/{id}")
+    public ResponseEntity<?> cadastrarVeiculo(@PathVariable Long id,@RequestBody Veiculo veiculoDados){
         try{
-            Veiculo veiculo = servicoVeiculo.cadastrarVeiculo(veiculoDados);
+            Veiculo veiculo = servicoVeiculo.cadastrarVeiculo(id,veiculoDados);
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body("Novo Veiculo cadastrado");
         }catch (DataIntegrityViolationException e) {
