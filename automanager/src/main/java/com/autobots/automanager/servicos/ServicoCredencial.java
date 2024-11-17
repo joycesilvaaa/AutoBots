@@ -5,6 +5,8 @@ import com.autobots.automanager.entitades.CredencialUsuarioSenha;
 import com.autobots.automanager.entitades.Usuario;
 import com.autobots.automanager.modelo.adicionadores.AdicionadorLinkCredencialCodigoBarra;
 import com.autobots.automanager.modelo.adicionadores.AdicionadorLinkCredencialUsuarioSenha;
+import com.autobots.automanager.modelo.atualizadores.CredencialCodigoBarraAtualizador;
+import com.autobots.automanager.modelo.atualizadores.CredencialUsuarioSenhaAtualizador;
 import com.autobots.automanager.repositorios.RepositorioCodigoBarra;
 import com.autobots.automanager.repositorios.RepositorioCredencialUsuarioSenha;
 import com.autobots.automanager.repositorios.RepositorioUsuario;
@@ -37,6 +39,12 @@ public class ServicoCredencial {
     @Autowired
     private AdicionadorLinkCredencialCodigoBarra adicionadorLinkCredencialCodigoBarra;
 
+    @Autowired
+    private CredencialUsuarioSenhaAtualizador credencialUsuarioSenhaAtualizador;
+
+    @Autowired
+    private CredencialCodigoBarraAtualizador credencialCodigoBarraAtualizador;
+
     public CredencialUsuarioSenha cadastrarCredencialUsuario(Long id, CredencialUsuarioSenha credencialUsuarioSenha){
         try {
             Usuario usuario = repositorioUsuario.findById(id)
@@ -64,28 +72,15 @@ public class ServicoCredencial {
         }
     }
 
-    public CredencialUsuarioSenha editarCredencialUsuario(Long id, CredencialUsuarioSenha credencialUsuarioSenha){
+    public CredencialUsuarioSenha editarCredencialUsuario(Long id, CredencialUsuarioSenha credencialUpdate){
         try {
-            Usuario usuario = repositorioUsuario.findById(id)
-                    .orElseThrow(() ->{
-                        logger.error("Usuario com id {} não encontrado.", id);
-                        return new EntityNotFoundException("Usuario não encontrado");
-                    });
-            CredencialUsuarioSenha credencial = repositorioCredencialUsuarioSenha.findById(credencialUsuarioSenha.getId())
+            CredencialUsuarioSenha credencial = repositorioCredencialUsuarioSenha.findById(id)
                     .orElseThrow(() ->{
                         logger.error("Credencial com id {} não encontrado.", id);
                         return new EntityNotFoundException("Credencial não encontrado");
                     });
-            if(credencialUsuarioSenha.getUltimoAcesso() != null){
-                credencial.setUltimoAcesso(credencialUsuarioSenha.getUltimoAcesso());
-            }
-            if(credencialUsuarioSenha.getNomeUsuario() != null){
-                credencial.setNomeUsuario(credencialUsuarioSenha.getNomeUsuario());
-            }
-            if(credencialUsuarioSenha.getSenha() != null){
-                credencial.setSenha(credencialUsuarioSenha.getSenha());
-            }
-            repositorioUsuario.save(usuario);
+           credencialUsuarioSenhaAtualizador.atualizar(credencial, credencialUpdate);
+           repositorioCredencialUsuarioSenha.save(credencial);
             return credencial;
         } catch (DataIntegrityViolationException e) {
             logger.error("Erro de integridade de dados ao editar credencial do usuario: {}", e.getMessage());
@@ -186,26 +181,15 @@ public class ServicoCredencial {
         }
     }
 
-    public CredencialCodigoBarra editarCredencialCodigo(Long id, CredencialCodigoBarra codigoBarra){
+    public CredencialCodigoBarra editarCredencialCodigo(Long id, CredencialCodigoBarra credencialUpdate){
         try {
-            Usuario usuario = repositorioUsuario.findById(id)
+            CredencialCodigoBarra credencial = repositorioCodigoBarra.findById(id)
                     .orElseThrow(() ->{
-                        logger.error("Usuario com id {} não encontrado.", id);
-                        return new EntityNotFoundException("Usuario não encontrado");
-                    });
-
-            CredencialCodigoBarra credencial = repositorioCodigoBarra.findById(codigoBarra.getId())
-                    .orElseThrow(() ->{
-                        logger.error("Credencial com id {} não encontrado.", codigoBarra.getId());
+                        logger.error("Credencial com id {} não encontrado.", id);
                         return new EntityNotFoundException("Credencial não encontrado");
                     });
-            if(codigoBarra.getUltimoAcesso() != null){
-                credencial.setUltimoAcesso(codigoBarra.getUltimoAcesso());
-            }
-            if (codigoBarra.getCodigo() != credencial.getCodigo()) {
-                credencial.setCodigo(codigoBarra.getCodigo());
-            }
-            repositorioUsuario.save(usuario);
+            credencialCodigoBarraAtualizador.atualizar(credencial, credencialUpdate);
+            repositorioCodigoBarra.save(credencial);
             return credencial;
         } catch (DataIntegrityViolationException e) {
             logger.error("Erro de integridade de dados ao cadastrar credencial: {}", e.getMessage());

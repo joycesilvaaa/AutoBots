@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
 
 
 @Component
@@ -23,7 +24,7 @@ public class DocumentoAtualizador {
         }
     }
 
-    public void atualizar(List<Documento> documentos, List<Documento> atualizacoes) {
+    public void atualizar(Set<Documento> documentos, Set<Documento> atualizacoes) {
         for (Documento atualizacao : atualizacoes) {
             for (Documento documento : documentos) {
                 if (atualizacao.getId() != null) {

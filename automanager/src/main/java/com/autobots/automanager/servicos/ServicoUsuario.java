@@ -3,6 +3,7 @@ package com.autobots.automanager.servicos;
 import com.autobots.automanager.dto.usuario.CriarUsuarioDto;
 import com.autobots.automanager.entitades.*;
 import com.autobots.automanager.modelo.adicionadores.AdicionadorLinkUsuario;
+import com.autobots.automanager.modelo.atualizadores.UsuarioAtualizador;
 import com.autobots.automanager.repositorios.RepositorioEmpresa;
 import com.autobots.automanager.repositorios.RepositorioUsuario;
 import com.autobots.automanager.repositorios.RepositorioVenda;
@@ -32,6 +33,9 @@ public class ServicoUsuario {
 
     @Autowired
     private AdicionadorLinkUsuario adicionadorLinkUsuario;
+
+    @Autowired
+    private UsuarioAtualizador usuarioAtualizador;
 
     public Usuario cadastrarUsuario(CriarUsuarioDto criarUsuarioDto){
         try{
@@ -79,6 +83,25 @@ public class ServicoUsuario {
 
     }
 
+    public Usuario editarUsuario(Long id, Usuario usuarioUpdate){
+        try {
+            Usuario usuario = repositorioUsuario.findById(id)
+                    .orElseThrow(() -> {
+                        logger.error("Usuário com id {} não encontrado.", id);
+                        return new EntityNotFoundException("Usuário não encontrado");
+                    });
+            usuarioAtualizador.atualizar(usuario, usuarioUpdate);
+            repositorioUsuario.save(usuario);
+            return  usuario;
+        } catch (DataIntegrityViolationException e) {
+            logger.error("Erro de integridade de dados ao editar cliente: {}", e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            logger.error("Erro ao editar cliente: {}", e.getMessage());
+            throw e;
+        }
+    }
+
     public List<Usuario> listagemUsuarios(){
         try {
             List<Usuario> usuarios = repositorioUsuario.findAll();
@@ -111,7 +134,7 @@ public class ServicoUsuario {
         }
     }
 
-    public boolean deletarUsuario(Long id){
+    public void deletarUsuario(Long id){
         try {
             Usuario usuario = repositorioUsuario.findById(id)
                     .orElseThrow(() -> {
@@ -145,7 +168,6 @@ public class ServicoUsuario {
             usuario.setEndereco(null);
 
             repositorioUsuario.delete(usuario);
-            return true;
         } catch (DataIntegrityViolationException e) {
             logger.error("Erro de integridade de dados ao cadastrar cliente: {}", e.getMessage());
             throw e;

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class EmailAtualizador {
@@ -21,7 +22,7 @@ public class EmailAtualizador {
         }
     }
 
-    public void atualizar(List<Email> emails, List<Email> atualizacoes) {
+    public void atualizar(Set<Email> emails, Set<Email> atualizacoes) {
         for (Email atualizacao : atualizacoes) {
             for (Email email : emails) {
                 if (email.getId() != null) {

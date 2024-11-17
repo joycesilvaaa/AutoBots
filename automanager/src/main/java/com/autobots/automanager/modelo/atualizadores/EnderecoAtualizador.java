@@ -1,9 +1,13 @@
 package com.autobots.automanager.modelo.atualizadores;
 
 import com.autobots.automanager.entitades.Endereco;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class EnderecoAtualizador {
-    private StringVerificadorNulo verificador = new StringVerificadorNulo();
+    @Autowired
+    private StringVerificadorNulo verificador;
 
     public void atualizar( Endereco endereco, Endereco atualizacao) {
         if (atualizacao != null) {

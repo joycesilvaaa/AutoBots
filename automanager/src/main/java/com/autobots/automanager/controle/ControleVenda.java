@@ -1,5 +1,6 @@
 package com.autobots.automanager.controle;
 
+import com.autobots.automanager.dto.usuario.VendaDto;
 import com.autobots.automanager.entitades.Empresa;
 import com.autobots.automanager.entitades.Venda;
 import com.autobots.automanager.servicos.ServicoVenda;
@@ -18,7 +19,8 @@ public class ControleVenda {
     @Autowired
     private ServicoVenda servicoVenda;
 
-    public ResponseEntity<?> cadastrarVenda(Venda vendaDados){
+    @PostMapping("/criar")
+    public ResponseEntity<?> cadastrarVenda(@RequestBody Venda vendaDados){
         try{
             Venda venda = servicoVenda.cadastrarVenda(vendaDados);
             return ResponseEntity.status(HttpStatus.CREATED)
@@ -32,6 +34,20 @@ public class ControleVenda {
         }
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<?> editarVenda(@PathVariable Long id,@RequestBody VendaDto vendaUpdate){
+        try{
+            Venda venda = servicoVenda.editarVenda(id, vendaUpdate);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body("Venda Atualizada");
+        }catch (DataIntegrityViolationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Dados inválidos ao editar venda: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro inesperado: " + e.getMessage());
+        }
+    }
     @GetMapping("/todas")
     public ResponseEntity<?> listagemVendas(){
         try{
@@ -69,7 +85,7 @@ public class ControleVenda {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletaVenda(@PathVariable Long id){
         try{
-            boolean venda = servicoVenda.deletaVenda(id);
+            servicoVenda.deletaVenda(id);
             return ResponseEntity.status(HttpStatus.OK)
                     .body("Venda Deletada");
         }catch (DataIntegrityViolationException e) {

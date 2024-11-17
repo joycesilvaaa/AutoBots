@@ -4,6 +4,7 @@ import com.autobots.automanager.entitades.Empresa;
 import com.autobots.automanager.entitades.Endereco;
 import com.autobots.automanager.entitades.Telefone;
 import com.autobots.automanager.modelo.adicionadores.AdicionadorLinkEmpresa;
+import com.autobots.automanager.modelo.atualizadores.EmpresaAtualizador;
 import com.autobots.automanager.repositorios.RepositorioEmpresa;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,9 @@ public class ServicoEmpresa {
     @Autowired
     private AdicionadorLinkEmpresa adicionadorLinkEmpresa;
 
+    @Autowired
+    private EmpresaAtualizador empresaAtualizador;
+
     public  Empresa cadastraEmpresa(Empresa empresa) {
         try {
             return repositorioEmpresa.save(empresa);
@@ -44,65 +48,9 @@ public class ServicoEmpresa {
                         logger.error("Empresa com id {} não encontrada.", id);
                         return new EntityNotFoundException("Empresa não encontrada");
                     });
-
-            if (empresaUpdate.getRazaoSocial() != null) {
-                empresa.setRazaoSocial(empresaUpdate.getRazaoSocial());
-            }
-            if (empresaUpdate.getNomeFantasia() != null) {
-                empresa.setNomeFantasia(empresaUpdate.getNomeFantasia());
-            }
-            if (empresaUpdate.getTelefones() != null) {
-                empresa.getTelefones().removeIf(telefone -> !empresaUpdate.getTelefones().contains(telefone));
-                for (Telefone novoTelefone : empresaUpdate.getTelefones()) {
-                    if (!empresa.getTelefones().contains(novoTelefone)) {
-                        empresa.getTelefones().add(novoTelefone);
-                    }
-                }}
-            if (empresaUpdate.getEndereco() != null) {
-                Endereco enderecoUpdate = empresaUpdate.getEndereco();
-                Endereco enderecoAtual = empresa.getEndereco();
-
-                if (enderecoUpdate.getEstado() != null) {
-                    enderecoAtual.setEstado(enderecoUpdate.getEstado());
-                }
-                if (enderecoUpdate.getCidade() != null) {
-                    enderecoAtual.setCidade(enderecoUpdate.getCidade());
-                }
-                if (enderecoUpdate.getBairro() != null) {
-                    enderecoAtual.setBairro(enderecoUpdate.getBairro());
-                }
-                if (enderecoUpdate.getRua() != null) {
-                    enderecoAtual.setRua(enderecoUpdate.getRua());
-                }
-                if (enderecoUpdate.getNumero() != null) {
-                    enderecoAtual.setNumero(enderecoUpdate.getNumero());
-                }
-                if (enderecoUpdate.getCodigoPostal() != null) {
-                    enderecoAtual.setCodigoPostal(enderecoUpdate.getCodigoPostal());
-                }
-                if (enderecoUpdate.getInformacoesAdicionais() != null) {
-                    enderecoAtual.setInformacoesAdicionais(enderecoUpdate.getInformacoesAdicionais());
-                }
-
-                empresa.setEndereco(enderecoAtual);
-            }
-            if (empresaUpdate.getCadastro() != null) {
-                empresa.setCadastro(empresaUpdate.getCadastro());
-            }
-            if (empresaUpdate.getUsuarios() != null) {
-                empresa.setUsuarios(empresaUpdate.getUsuarios());
-            }
-            if (empresaUpdate.getVendas() != null) {
-                empresa.setVendas(empresaUpdate.getVendas());
-            }
-            if (empresaUpdate.getMercadorias() != null) {
-                empresa.setMercadorias(empresaUpdate.getMercadorias());
-            }
-            if(empresaUpdate.getServicos() != null){
-                empresa.setServicos(empresaUpdate.getServicos());
-            }
-
-            return repositorioEmpresa.save(empresa);
+            empresaAtualizador.atualizar(empresa, empresaUpdate);
+            repositorioEmpresa.save(empresa);
+            return empresa;
         } catch (DataIntegrityViolationException e) {
             logger.error("Erro de integridade de dados ao editar empresa: {}", e.getMessage());
             throw e;
@@ -145,7 +93,7 @@ public class ServicoEmpresa {
          }
     }
 
-    public boolean deletarEmpresa(Long id){
+    public void deletarEmpresa(Long id){
         try{
             Empresa empresa = repositorioEmpresa.findById(id)
                     .orElseThrow(() -> {
@@ -158,7 +106,6 @@ public class ServicoEmpresa {
             empresa.getMercadorias().clear();
             empresa.getTelefones().clear();
             repositorioEmpresa.delete(empresa);
-            return true;
         }catch (DataIntegrityViolationException e) {
             logger.error("Erro de integridade de dados ao deletar empresa: {}", e.getMessage());
             throw e;

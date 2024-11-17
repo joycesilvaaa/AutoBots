@@ -3,6 +3,7 @@ package com.autobots.automanager.servicos;
 import com.autobots.automanager.entitades.Veiculo;
 import com.autobots.automanager.entitades.Venda;
 import com.autobots.automanager.modelo.adicionadores.AdicionadorLinkVeiculo;
+import com.autobots.automanager.modelo.atualizadores.VeiculoAtualizador;
 import com.autobots.automanager.repositorios.RepositorioVeiculo;
 import com.autobots.automanager.repositorios.RepositorioVenda;
 import org.slf4j.Logger;
@@ -28,6 +29,9 @@ public class ServicoVeiculo {
     @Autowired
     private AdicionadorLinkVeiculo adicionadorLinkVeiculo;
 
+    @Autowired
+    private VeiculoAtualizador veiculoAtualizador;
+
     public Veiculo cadastrarVeiculo(Veiculo veiculo){
         try{
             return repositorioVeiculo.save(veiculo);
@@ -36,6 +40,25 @@ public class ServicoVeiculo {
             throw e;
         } catch (Exception e) {
             logger.error("Erro ao cadastrar novo veiculo: {}", e.getMessage());
+            throw e;
+        }
+    }
+
+    public Veiculo editarVeiculo(Long id, Veiculo veiculoUpdate){
+        try{
+            Veiculo veiculo = repositorioVeiculo.findById(id)
+                    .orElseThrow(() -> {
+                        logger.error("Veiculo com id {} não encontrado.", id);
+                        return new EntityNotFoundException("Veiculo não encontrada");
+                    });
+            veiculoAtualizador.atualizar(veiculo, veiculoUpdate);
+            repositorioVeiculo.save(veiculo);
+            return veiculo;
+        }catch (DataIntegrityViolationException e) {
+            logger.error("Erro de integridade de dados ao listar veiculo: {}", e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            logger.error("Erro ao listar veiculo: {}", e.getMessage());
             throw e;
         }
     }

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class MercadoriaAtualizador {
@@ -35,7 +36,7 @@ public class MercadoriaAtualizador {
         }
     }
 
-    public void atualizar(List<Mercadoria> mercadorias, List<Mercadoria> atualizacoes) {
+    public void atualizar(Set<Mercadoria> mercadorias, Set<Mercadoria> atualizacoes) {
         for (Mercadoria atualizacao : atualizacoes) {
             for (Mercadoria mercadoria :mercadorias) {
                 if (mercadoria.getId() != null) {

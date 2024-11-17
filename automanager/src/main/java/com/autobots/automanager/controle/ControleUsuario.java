@@ -21,7 +21,6 @@ public class ControleUsuario {
     @PostMapping("/criar")
     public ResponseEntity<?> cadastrarUsuario(@RequestBody CriarUsuarioDto criarUsuarioDto){
         try {
-            System.out.println(criarUsuarioDto);
             Usuario usuarioCadastrado = servicoUsuario.cadastrarUsuario(criarUsuarioDto);
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body("Cliente Cadastrado.");
@@ -34,6 +33,20 @@ public class ControleUsuario {
         }
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<?> editarUsuario(@PathVariable Long id, @RequestBody Usuario usuarioUpdate){
+        try {
+            Usuario usuario = servicoUsuario.editarUsuario(id, usuarioUpdate);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body("Usuario Atualizado");
+        } catch (DataIntegrityViolationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Dados inválidos ao editar cliente: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro inesperado: " + e.getMessage());
+        }
+    }
     @GetMapping("/todos")
     public ResponseEntity<?> listagemUsuarios(){
         try {
@@ -46,10 +59,10 @@ public class ControleUsuario {
         }
     }
 
-    @GetMapping("/{usuario_id}")
-    public ResponseEntity<?> listaUsuario(@PathVariable Long usuario_id){
+    @GetMapping("/{id}")
+    public ResponseEntity<?> listaUsuario(@PathVariable Long id){
         try {
-            Usuario usuario = servicoUsuario.listaUsuario(usuario_id);
+            Usuario usuario = servicoUsuario.listaUsuario(id);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(usuario);
         }  catch (DataIntegrityViolationException e) {
@@ -60,11 +73,10 @@ public class ControleUsuario {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-    @DeleteMapping("/excluir/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deletaUsuario(@PathVariable Long id){
         try {
-            System.out.println(id);
-            boolean usuario = servicoUsuario.deletarUsuario(id);
+            servicoUsuario.deletarUsuario(id);
             return ResponseEntity.status(HttpStatus.OK)
                     .body("Usuario Excluido");
         }  catch (DataIntegrityViolationException e) {

@@ -1,9 +1,11 @@
 package com.autobots.automanager.servicos;
 
+import com.autobots.automanager.dto.usuario.VendaDto;
 import com.autobots.automanager.entitades.Empresa;
 import com.autobots.automanager.entitades.Veiculo;
 import com.autobots.automanager.entitades.Venda;
 import com.autobots.automanager.modelo.adicionadores.AdicionadorLinkVenda;
+import com.autobots.automanager.modelo.atualizadores.VendaAtualizador;
 import com.autobots.automanager.repositorios.RepositorioEmpresa;
 import com.autobots.automanager.repositorios.RepositorioVeiculo;
 import com.autobots.automanager.repositorios.RepositorioVenda;
@@ -33,6 +35,9 @@ public class ServicoVenda {
     @Autowired
     private AdicionadorLinkVenda adicionadorLinkVenda;
 
+    @Autowired
+    private VendaAtualizador vendaAtualizador;
+
     public Venda cadastrarVenda(Venda venda){
         try{
             return repositorioVenda.save(venda);
@@ -44,7 +49,24 @@ public class ServicoVenda {
             throw e;
         }
     }
-
+    public Venda editarVenda(Long id, VendaDto vendaUpdate){
+        try{
+            Venda venda = repositorioVenda.findById(id)
+                    .orElseThrow(()->{
+                        logger.error("Venda com id {} não encontrado.", id);
+                        return new EntityNotFoundException("Venda não encontrada");
+                    });
+            vendaAtualizador.atualizar(venda,vendaUpdate);
+            repositorioVenda.save(venda);
+            return venda;
+        }catch (DataIntegrityViolationException e) {
+            logger.error("Erro de integridade de dados ao editar venda: {}", e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            logger.error("Erro ao cadastrar ao editar venda: {}", e.getMessage());
+            throw e;
+        }
+    }
     public List<Venda> listagemVendas(){
         try{
             List<Venda> vendas = repositorioVenda.findAll();
@@ -77,7 +99,7 @@ public class ServicoVenda {
         }
     }
 
-    public boolean deletaVenda(Long id){
+    public void deletaVenda(Long id){
         try{
             Venda venda = repositorioVenda.findById(id)
                     .orElseThrow(()->{
@@ -102,7 +124,6 @@ public class ServicoVenda {
             venda.getMercadorias().clear();
             venda.getServicos().clear();
             repositorioVenda.delete(venda);
-            return true;
         }catch (DataIntegrityViolationException e) {
             logger.error("Erro de integridade de dados ao deletar veiculo: {}", e.getMessage());
             throw e;

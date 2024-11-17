@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class ServicoAtualizador {
@@ -27,7 +28,7 @@ public class ServicoAtualizador {
         }
     }
 
-    public void atualizar(List<Servico> servicos, List<Servico> atualizacoes) {
+    public void atualizar(Set<Servico> servicos,Set<Servico> atualizacoes) {
         for (Servico atualizacao : atualizacoes) {
             for (Servico servico : servicos) {
                 if (servico.getId() != null) {

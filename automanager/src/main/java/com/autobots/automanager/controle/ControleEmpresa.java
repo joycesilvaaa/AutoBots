@@ -37,7 +37,7 @@ public class ControleEmpresa {
         try{
             Empresa empresa = servicoEmpresa.editarEmpresa(id, empresaUpdate);
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(empresa);
+                    .body("Empresa Atualizada");
         } catch (DataIntegrityViolationException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Dados inválidos ao listar empresa: " + e.getMessage());
@@ -84,7 +84,7 @@ public class ControleEmpresa {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletaEmpresa(@PathVariable Long id){
         try{
-            boolean empresaDeletada = servicoEmpresa.deletarEmpresa(id);
+            servicoEmpresa.deletarEmpresa(id);
             return ResponseEntity.status(HttpStatus.OK)
                     .body("Empresa Deletada");
         } catch (DataIntegrityViolationException e) {
