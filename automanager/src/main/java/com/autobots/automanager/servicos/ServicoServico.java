@@ -5,6 +5,7 @@ import com.autobots.automanager.entitades.Empresa;
 import com.autobots.automanager.entitades.Servico;
 import com.autobots.automanager.entitades.Venda;
 import com.autobots.automanager.modelo.adicionadores.AdicionadorLinkServico;
+import com.autobots.automanager.modelo.atualizadores.ServicoAtualizador;
 import com.autobots.automanager.repositorios.RepositorioEmpresa;
 import com.autobots.automanager.repositorios.RepositorioServico;
 import com.autobots.automanager.repositorios.RepositorioVenda;
@@ -34,6 +35,9 @@ public class ServicoServico {
     @Autowired
     private AdicionadorLinkServico adicionadorLinkServico;
 
+    @Autowired
+    private ServicoAtualizador servicoAtualizador;
+
      public Servico cadastrarServico(Servico servico){
          try{
              return repositorioServico.save(servico);
@@ -45,6 +49,24 @@ public class ServicoServico {
              throw e;
          }
      }
+
+    public Servico editarServico(Long id, Servico servicoUpdate){
+        try{
+            Servico servico = repositorioServico.findById(id)
+                    .orElseThrow(()->{
+                        logger.error("Servico com id {} não encontrado.", id);
+                        return new EntityNotFoundException("Servico não encontrada");
+                    });
+            servicoAtualizador.atualizar(servico, servicoUpdate);
+            return repositorioServico.save(servico);
+        }catch (DataIntegrityViolationException e) {
+            logger.error("Erro de integridade de dados ao cadastrar servico: {}", e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            logger.error("Erro ao cadastrar servico: {}", e.getMessage());
+            throw e;
+        }
+    }
 
     public List<Servico> listagemServicos(){
         try{
@@ -78,7 +100,7 @@ public class ServicoServico {
         }
     }
 
-    public boolean deleteServico(Long id){
+    public void deleteServico(Long id){
         try{
             Servico servico = repositorioServico.findById(id)
                     .orElseThrow(()->{
@@ -100,7 +122,6 @@ public class ServicoServico {
                 }
             }
             repositorioServico.delete(servico);
-            return true;
         }catch (DataIntegrityViolationException e) {
             logger.error("Erro de integridade de dados ao listar servicos: {}", e.getMessage());
             throw e;

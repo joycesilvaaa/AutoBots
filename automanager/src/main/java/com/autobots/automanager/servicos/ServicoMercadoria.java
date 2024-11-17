@@ -5,6 +5,7 @@ import com.autobots.automanager.entitades.Mercadoria;
 import com.autobots.automanager.entitades.Usuario;
 import com.autobots.automanager.entitades.Venda;
 import com.autobots.automanager.modelo.adicionadores.AdicionadorLinkMercadoria;
+import com.autobots.automanager.modelo.atualizadores.MercadoriaAtualizador;
 import com.autobots.automanager.repositorios.RepositorioEmpresa;
 import com.autobots.automanager.repositorios.RepositorioMercadoria;
 import com.autobots.automanager.repositorios.RepositorioUsuario;
@@ -38,6 +39,9 @@ public class ServicoMercadoria {
     @Autowired
     private AdicionadorLinkMercadoria adicionadorLinkMercadoria;
 
+    @Autowired
+    private MercadoriaAtualizador mercadoriaAtualizador;
+
     public Mercadoria cadastrarMercadoria(Mercadoria mercadoria){
         try {
             return repositorioMercadoria.save(mercadoria);
@@ -57,6 +61,7 @@ public class ServicoMercadoria {
                         logger.error("Mercadoria com id {} não encontrado.", id);
                         return new EntityNotFoundException("Mercadoria não encontrada");
                     });
+            mercadoriaAtualizador.atualizar(mercadoria, mercadoriaUpdate);
             return repositorioMercadoria.save(mercadoria);
         } catch (DataIntegrityViolationException e) {
             logger.error("Erro de integridade de dados ao editar mercadoria: {}", e.getMessage());

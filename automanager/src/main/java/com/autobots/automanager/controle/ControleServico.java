@@ -18,7 +18,6 @@ public class ControleServico {
     @Autowired
     private ServicoServico servicoServico;
 
-
     @PostMapping("/criar")
     public ResponseEntity<?> cadastrarServico(@RequestBody Servico servicoNovo){
         try{
@@ -28,6 +27,21 @@ public class ControleServico {
         } catch (DataIntegrityViolationException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Dados inválidos ao cadastrar serviço: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro inesperado: " + e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> editarServico(@PathVariable Long id, @RequestBody Servico servicoUpdate){
+        try{
+            Servico servico = servicoServico.editarServico(id, servicoUpdate);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body("Serviço Atualizado");
+        } catch (DataIntegrityViolationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Dados inválidos ao fazer listar de serviço: " + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Erro inesperado: " + e.getMessage());
@@ -73,7 +87,7 @@ public class ControleServico {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletarServico(@PathVariable Long id){
         try{
-            boolean servico = servicoServico.deleteServico(id);
+            servicoServico.deleteServico(id);
             return ResponseEntity.status(HttpStatus.OK)
                     .body("Serviço Deletado");
         } catch (DataIntegrityViolationException e) {
