@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class ControleCredencial {
     @Autowired
     private ServicoCredencial servicoCredencial;
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
     @PostMapping("/usuario/criar/{id}")
     public ResponseEntity<?> cadastrarCredencialUsuario(@PathVariable Long id, @RequestBody CredencialUsuarioSenha credencialUsuarioDados){
         try{
@@ -32,7 +34,7 @@ public class ControleCredencial {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
     @PutMapping("/usuario/{id}")
     public ResponseEntity<?> editarCredencialUsuario(@PathVariable Long id, @RequestBody CredencialUsuarioSenha credencialUsuarioDados){
         try{
@@ -48,7 +50,7 @@ public class ControleCredencial {
         }
     }
 
-
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/usuario/todos")
     public ResponseEntity<?> listaCredencialUsuario(){
         try{
@@ -68,7 +70,7 @@ public class ControleCredencial {
         }
     }
 
-
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/usuario/{id}")
     public ResponseEntity<?> listaCredencialUsuario(@PathVariable Long id){
         try{
@@ -84,6 +86,7 @@ public class ControleCredencial {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @DeleteMapping("/usuario/{userId}/{credencialId}")
     public ResponseEntity<?> deletaCredencialUsuario(@PathVariable Long userId, @PathVariable Long credencialId){
         try{
@@ -98,7 +101,7 @@ public class ControleCredencial {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
     @PostMapping("/codigo/criar/{id}")
     public ResponseEntity<?> cadastrarCredencialCodigo(@PathVariable Long id, @RequestBody CredencialCodigoBarra credencialCodigoBarra){
         try{
@@ -114,6 +117,7 @@ public class ControleCredencial {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PutMapping("/codigo/{id}")
     public ResponseEntity<?> editarCredencialCodigo(@PathVariable Long id, @RequestBody CredencialCodigoBarra credencialCodigoBarra){
         try{
@@ -129,6 +133,7 @@ public class ControleCredencial {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/codigo/todos")
     public ResponseEntity<?> listagemCredencialCodigo(){
         try{
@@ -148,6 +153,7 @@ public class ControleCredencial {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/codigo/{id}")
     public ResponseEntity<?> listaCredencialCodigo(@PathVariable Long id){
         try{
@@ -163,6 +169,7 @@ public class ControleCredencial {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @DeleteMapping("/codigo/{userId}/{credencialId}")
     public ResponseEntity<?> deletaCredencialCodigo(@PathVariable Long userId, @PathVariable Long credencialId){
         try{

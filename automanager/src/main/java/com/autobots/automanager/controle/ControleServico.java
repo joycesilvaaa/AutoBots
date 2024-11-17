@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class ControleServico {
 
     @Autowired
     private ServicoServico servicoServico;
-
+    @PreAuthorize("hasAnyRole('ADMIN','GERENTE')")
     @PostMapping("/criar")
     public ResponseEntity<?> cadastrarServico(@RequestBody Servico servicoNovo){
         try{
@@ -32,7 +33,7 @@ public class ControleServico {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN','GERENTE')")
     @PutMapping("/{id}")
     public ResponseEntity<?> editarServico(@PathVariable Long id, @RequestBody Servico servicoUpdate){
         try{
@@ -48,7 +49,7 @@ public class ControleServico {
         }
     }
 
-
+    @PreAuthorize("hasAnyRole('ADMIN','GERENTE', 'VENDEDOR')")
     @GetMapping("/todos")
     public ResponseEntity<?> listagemServicos(){
         try{
@@ -68,7 +69,7 @@ public class ControleServico {
         }
     }
 
-
+    @PreAuthorize("hasAnyRole('ADMIN','GERENTE', 'VENDEDOR')")
     @GetMapping("/{id}")
     public ResponseEntity<?> listarServico(@PathVariable Long id){
         try{
@@ -83,7 +84,7 @@ public class ControleServico {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN','GERENTE')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletarServico(@PathVariable Long id){
         try{

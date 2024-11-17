@@ -1,5 +1,6 @@
 package com.autobots.automanager.entitades;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -10,13 +11,17 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
-import lombok.Data;
 import org.springframework.hateoas.RepresentationModel;
 
-@Data
+import lombok.Getter;
+import lombok.Setter;
+
+@SuppressWarnings("serial")
+@Setter
+@Getter
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Credencial extends RepresentationModel<Credencial> {
+public abstract class Credencial extends RepresentationModel<Credencial> implements Serializable{
 	@Id()
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;

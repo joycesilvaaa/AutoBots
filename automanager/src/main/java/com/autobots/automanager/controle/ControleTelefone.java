@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public class ControleTelefone {
 
     @Autowired
     private ServicoTelefone servicoTelefone;
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
     @PostMapping("/usuario/criar/{id}")
     public ResponseEntity<?> cadastroTelefoneUsuario(@RequestBody Telefone telefoneDados, @PathVariable Long id){
         try{
@@ -33,7 +34,7 @@ public class ControleTelefone {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     @PostMapping("/empresa/criar/{id}")
     public ResponseEntity<?> cadastroTelefoneEmpresa(@RequestBody Telefone telefoneDados, @PathVariable Long id){
         try{
@@ -48,7 +49,7 @@ public class ControleTelefone {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     @PutMapping("/{id}")
     public ResponseEntity<?> editaTelefone(@PathVariable Long id,@RequestBody Telefone telefoneUpdate){
         try{
@@ -63,7 +64,7 @@ public class ControleTelefone {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
     @GetMapping("/todos")
     public ResponseEntity<?> listagemTelefones(){
         try{
@@ -82,7 +83,7 @@ public class ControleTelefone {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
     @GetMapping("/{id}")
     public ResponseEntity<?> listaTelefone(@PathVariable Long id){
         try{
@@ -97,7 +98,7 @@ public class ControleTelefone {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletaTelefone(@PathVariable Long id){
         try{

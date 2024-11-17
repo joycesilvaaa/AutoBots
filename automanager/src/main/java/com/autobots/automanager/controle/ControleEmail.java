@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public class ControleEmail {
 
     @Autowired
     private ServicoEmail servicoEmail;
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
     @PostMapping("/criar/{id}")
     public ResponseEntity<?> cadastrarEmail(@PathVariable Long id, @RequestBody Email emailDados){
         try{
@@ -31,7 +32,7 @@ public class ControleEmail {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
     @PutMapping("/{id}")
     public ResponseEntity<?> editarEmail(@PathVariable Long id, @RequestBody Email emailUpdate){
         try{
@@ -46,7 +47,7 @@ public class ControleEmail {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
     @GetMapping("/{id}")
     public ResponseEntity<?> listarEmail(@PathVariable Long id){
         try{
@@ -61,7 +62,7 @@ public class ControleEmail {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR', 'CLIENTE')")
     @GetMapping("/todos")
     public ResponseEntity<?> listagemEmails(){
         try{
@@ -80,7 +81,7 @@ public class ControleEmail {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR', 'CLIENTE')")
     @DeleteMapping("/{userId}/{emailId}")
     public ResponseEntity<?> deleteEmail(@PathVariable Long userId, @PathVariable Long emailId){
         try{

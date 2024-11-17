@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class ControleMercadoria {
 
     @Autowired
     private ServicoMercadoria servicoMercadoria;
-
+    @PreAuthorize("hasAnyRole('ADMIN','GERENTE')")
     @PostMapping("/criar")
     public ResponseEntity<?> cadastrarMercadoria(@RequestBody Mercadoria mercadoriaNova){
         try{
@@ -32,7 +33,7 @@ public class ControleMercadoria {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN','GERENTE')")
     @PutMapping("/{id}")
     public ResponseEntity<?> editarMercadoria(@PathVariable Long id, @RequestBody Mercadoria mercadoriaUpdate){
         try{
@@ -47,7 +48,7 @@ public class ControleMercadoria {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN','GERENTE', 'VENDEDOR')")
     @GetMapping("/todas")
     public ResponseEntity<?> listagemMercadorias(){
         try{
@@ -66,7 +67,7 @@ public class ControleMercadoria {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN','GERENTE', 'VENDEDOR')")
     @GetMapping("/{id}")
     public ResponseEntity<?> listarMercadoria(@PathVariable Long id){
         try{
@@ -81,7 +82,7 @@ public class ControleMercadoria {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN','GERENTE')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletarMercadoria(@PathVariable Long id){
         try{

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class ControleUsuario {
 
     @Autowired
     private ServicoUsuario servicoUsuario;
-
+    @PreAuthorize("hasAnyRole('ADMIN','GERENTE','VENDEDOR')")
     @PostMapping("/criar")
     public ResponseEntity<?> cadastrarUsuario(@RequestBody CriarUsuarioDto criarUsuarioDto){
         try {
@@ -32,7 +33,7 @@ public class ControleUsuario {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
     @PutMapping("/{id}")
     public ResponseEntity<?> editarUsuario(@PathVariable Long id, @RequestBody Usuario usuarioUpdate){
         try {
@@ -47,6 +48,7 @@ public class ControleUsuario {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR', 'CLIENTE')")
     @GetMapping("/todos")
     public ResponseEntity<?> listagemUsuarios(){
         try {
@@ -58,7 +60,7 @@ public class ControleUsuario {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
     @GetMapping("/{id}")
     public ResponseEntity<?> listaUsuario(@PathVariable Long id){
         try {
@@ -73,6 +75,7 @@ public class ControleUsuario {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletaUsuario(@PathVariable Long id){
         try {

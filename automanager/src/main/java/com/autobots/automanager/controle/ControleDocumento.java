@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class ControleDocumento {
 
     @Autowired
     private ServicoDocumento servicoDocumento;
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR', 'CLIENTE')")
     @PostMapping("/criar/{id}")
     public ResponseEntity<?> cadastrarDocumento(@PathVariable Long id, @RequestBody Documento documentoDados){
         try{
@@ -33,7 +34,7 @@ public class ControleDocumento {
         }
     }
 
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
     @PutMapping("/{id}")
     public ResponseEntity<?> editarDocumento(@PathVariable Long id, @RequestBody Documento documentoUpdate){
         try{
@@ -48,7 +49,7 @@ public class ControleDocumento {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR', 'CLIENTE')")
     @GetMapping("/todos")
     public ResponseEntity<?> listagemDocumentos(){
         try{
@@ -67,7 +68,7 @@ public class ControleDocumento {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     @GetMapping("/{id}")
     public ResponseEntity<?> listarDocumento(@PathVariable Long id){
         try{
@@ -82,7 +83,7 @@ public class ControleDocumento {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
     @DeleteMapping("/{userId}/{documentoId}")
     public ResponseEntity<?> deletarDocumento(@PathVariable Long userId, @PathVariable Long documentoId){
         try{

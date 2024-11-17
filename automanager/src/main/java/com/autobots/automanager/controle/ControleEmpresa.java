@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public class ControleEmpresa {
 
     @Autowired
     private ServicoEmpresa servicoEmpresa;
-
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping("/criar")
     public ResponseEntity<?> cadastrarEmpresa(@RequestBody Empresa empresaDados){
         try{
@@ -31,7 +32,7 @@ public class ControleEmpresa {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<?> editarEmpresa(@PathVariable Long id, @RequestBody Empresa empresaUpdate){
         try{
@@ -46,7 +47,7 @@ public class ControleEmpresa {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/todas")
     public ResponseEntity<?> listagemEmpresas(){
         try{
@@ -65,7 +66,7 @@ public class ControleEmpresa {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<?> listaEmpresa(@PathVariable Long id){
         try{
@@ -80,7 +81,7 @@ public class ControleEmpresa {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletaEmpresa(@PathVariable Long id){
         try{
@@ -95,7 +96,7 @@ public class ControleEmpresa {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PutMapping("/{userId}/{empresaId}")
     public ResponseEntity<?> incluiUsuario(@PathVariable Long userId, @PathVariable Long empresaId){
         try{

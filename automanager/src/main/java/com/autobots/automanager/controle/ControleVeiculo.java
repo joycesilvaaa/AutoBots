@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class ControleVeiculo {
 
     @Autowired
     private ServicoVeiculo servicoVeiculo;
-
+    @PreAuthorize("hasAnyRole('ADMIN','GERENTE','VENDEDOR')")
     @PostMapping("/criar/{id}")
     public ResponseEntity<?> cadastrarVeiculo(@PathVariable Long id,@RequestBody Veiculo veiculoDados){
         try{
@@ -32,7 +33,7 @@ public class ControleVeiculo {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN','GERENTE')")
     @GetMapping("/todos")
     public ResponseEntity<?> listaVeiculo(){
         try{
@@ -51,7 +52,7 @@ public class ControleVeiculo {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN','GERENTE','VENDEDOR')")
     @GetMapping("/{id}")
     public ResponseEntity<?> listaVeiculo(@PathVariable Long id){
         try{

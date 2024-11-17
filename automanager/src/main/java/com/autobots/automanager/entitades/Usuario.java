@@ -42,4 +42,42 @@ public class Usuario extends RepresentationModel<Usuario> {
 	@JsonIgnoreProperties(value = {"proprietario", "vendas"})
 	@OneToMany(orphanRemoval = true,fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
 	private Set<Veiculo> veiculos = new HashSet<>();
+
+	public Set<CredencialUsuarioSenha> getCredenciaisUsuarioSenha() {
+		Set<CredencialUsuarioSenha> credenciaisUsuarioSenha = new HashSet<>();
+		for (Credencial credencial : credenciais) {
+			if (credencial instanceof CredencialUsuarioSenha) {
+				credenciaisUsuarioSenha.add((CredencialUsuarioSenha) credencial);
+			}
+		}
+		return credenciaisUsuarioSenha;
+	}
+
+	public Set<CredencialCodigoBarra> getCredenciaisCodigoBarra() {
+		Set<CredencialCodigoBarra> credenciais = new HashSet<>();
+		for (Credencial credencial : credenciais) {
+			if (credencial instanceof CredencialCodigoBarra) {
+				credenciais.add((CredencialCodigoBarra) credencial);
+			}
+		}
+		return credenciais;
+	}
+
+	public CredencialUsuarioSenha getCredencialUsuarioSenha() {
+		for (Credencial credencial : credenciais) {
+			if (credencial instanceof CredencialUsuarioSenha) {
+				return (CredencialUsuarioSenha) credencial;
+			}
+		}
+		return null;
+	}
+
+	public CredencialCodigoBarra getCredencialCodigoBarra() {
+		for (Credencial credencial : credenciais) {
+			if (credencial instanceof CredencialCodigoBarra) {
+				return (CredencialCodigoBarra) credencial;
+			}
+		}
+		return null;
+	}
 }
