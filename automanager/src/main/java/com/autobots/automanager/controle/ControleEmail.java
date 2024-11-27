@@ -1,12 +1,17 @@
 package com.autobots.automanager.controle;
 
 import com.autobots.automanager.entitades.Email;
+import com.autobots.automanager.entitades.Usuario;
+import com.autobots.automanager.modelo.auth.VerificadorPermissao;
+import com.autobots.automanager.repositorios.RepositorioUsuario;
 import com.autobots.automanager.servicos.ServicoEmail;
+import com.autobots.automanager.utils.UsuarioSelecionador;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,10 +22,28 @@ public class ControleEmail {
 
     @Autowired
     private ServicoEmail servicoEmail;
+
+    @Autowired
+    private RepositorioUsuario repositorioUsuario;
+
+    @Autowired
+    private UsuarioSelecionador usuarioSelecionador;
+
+    @Autowired
+    private VerificadorPermissao verificadorPermissao;
+
     @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
     @PostMapping("/criar/{id}")
-    public ResponseEntity<?> cadastrarEmail(@PathVariable Long id, @RequestBody Email emailDados){
+    public ResponseEntity<?> cadastrarEmail(@PathVariable Long id, @RequestBody Email emailDados, Authentication authentication){
         try{
+            List<Usuario> usuarios = repositorioUsuario.findAll();
+            Usuario usuario = usuarioSelecionador.selecionar(usuarios, id);
+            String username = authentication.getName();
+            Usuario usuarioLogado = usuarioSelecionador.selecionadorPorUsername(usuarios, username);
+            boolean permissao = verificadorPermissao.verificar(usuarioLogado.getPerfis(),usuario.getPerfis());
+            if (permissao == false) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario não permitido");
+            }
             Email email = servicoEmail.cadastrarEmail(id, emailDados);
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body("E-mail criado com sucesso");
@@ -34,8 +57,16 @@ public class ControleEmail {
     }
     @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
     @PutMapping("/{id}")
-    public ResponseEntity<?> editarEmail(@PathVariable Long id, @RequestBody Email emailUpdate){
+    public ResponseEntity<?> editarEmail(@PathVariable Long id, @RequestBody Email emailUpdate, Authentication authentication){
         try{
+            List<Usuario> usuarios = repositorioUsuario.findAll();
+            Usuario usuario = usuarioSelecionador.selecionar(usuarios, id);
+            String username = authentication.getName();
+            Usuario usuarioLogado = usuarioSelecionador.selecionadorPorUsername(usuarios, username);
+            boolean permissao = verificadorPermissao.verificar(usuarioLogado.getPerfis(),usuario.getPerfis());
+            if (permissao == false) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario não permitido");
+            }
             Email email = servicoEmail.editarEmail(id, emailUpdate);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(email);
@@ -62,7 +93,7 @@ public class ControleEmail {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR', 'CLIENTE')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/todos")
     public ResponseEntity<?> listagemEmails(){
         try{
@@ -83,8 +114,16 @@ public class ControleEmail {
     }
     @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR', 'CLIENTE')")
     @DeleteMapping("/{userId}/{emailId}")
-    public ResponseEntity<?> deleteEmail(@PathVariable Long userId, @PathVariable Long emailId){
+    public ResponseEntity<?> deleteEmail(@PathVariable Long userId, @PathVariable Long emailId, Authentication authentication){
         try{
+            List<Usuario> usuarios = repositorioUsuario.findAll();
+            Usuario usuario = usuarioSelecionador.selecionar(usuarios, userId);
+            String username = authentication.getName();
+            Usuario usuarioLogado = usuarioSelecionador.selecionadorPorUsername(usuarios, username);
+            boolean permissao = verificadorPermissao.verificar(usuarioLogado.getPerfis(),usuario.getPerfis());
+            if (permissao == false) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario não permitido");
+            }
             servicoEmail.deleteEmail(userId, emailId);
             return ResponseEntity.status(HttpStatus.OK)
                     .body("E-mail deletado");

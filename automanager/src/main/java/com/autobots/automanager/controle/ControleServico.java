@@ -2,12 +2,17 @@ package com.autobots.automanager.controle;
 
 import com.autobots.automanager.entitades.Empresa;
 import com.autobots.automanager.entitades.Servico;
+import com.autobots.automanager.entitades.Usuario;
+import com.autobots.automanager.modelo.auth.VerificadorPermissao;
+import com.autobots.automanager.repositorios.RepositorioUsuario;
 import com.autobots.automanager.servicos.ServicoServico;
+import com.autobots.automanager.utils.UsuarioSelecionador;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,9 +23,19 @@ public class ControleServico {
 
     @Autowired
     private ServicoServico servicoServico;
+
+    @Autowired
+    private RepositorioUsuario repositorioUsuario;
+
+    @Autowired
+    private UsuarioSelecionador usuarioSelecionador;
+
+    @Autowired
+    private VerificadorPermissao verificadorPermissao;
+
     @PreAuthorize("hasAnyRole('ADMIN','GERENTE')")
     @PostMapping("/criar")
-    public ResponseEntity<?> cadastrarServico(@RequestBody Servico servicoNovo){
+    public ResponseEntity<?> cadastrarServico(@RequestBody Servico servicoNovo, Authentication authentication){
         try{
             Servico servico = servicoServico.cadastrarServico(servicoNovo);
             return ResponseEntity.status(HttpStatus.CREATED)

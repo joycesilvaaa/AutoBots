@@ -29,7 +29,7 @@ public class AdicionadorLinkVeiculo implements AdicionadorLink<Veiculo> {
         Link linkProprio = WebMvcLinkBuilder
                 .linkTo(WebMvcLinkBuilder
                         .methodOn(ControleVeiculo.class)
-                        .listaVeiculo())
+                        .listagemVeiculo())
                 .withRel("veiculos");
         objeto.add(linkProprio);
     }

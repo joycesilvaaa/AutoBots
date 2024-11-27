@@ -58,7 +58,7 @@ public class ServicoDocumento {
 
     public Documento editarDocumento(Long id, Documento documentoUpdate){
         try{
-            Documento documento = repositorioDocumento.findById(id)
+            Documento documento = repositorioDocumento.findById(documentoUpdate.getId())
                     .orElseThrow(() ->{
                         logger.error("Documento com id {} não encontrado.", documentoUpdate.getId());
                         return new EntityNotFoundException("Documento não encontrado");

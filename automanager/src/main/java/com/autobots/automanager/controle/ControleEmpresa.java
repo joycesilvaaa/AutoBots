@@ -1,7 +1,10 @@
 package com.autobots.automanager.controle;
 
 import com.autobots.automanager.entitades.Empresa;
+import com.autobots.automanager.modelo.auth.VerificadorPermissao;
+import com.autobots.automanager.repositorios.RepositorioUsuario;
 import com.autobots.automanager.servicos.ServicoEmpresa;
+import com.autobots.automanager.utils.UsuarioSelecionador;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -17,6 +20,16 @@ public class ControleEmpresa {
 
     @Autowired
     private ServicoEmpresa servicoEmpresa;
+
+    @Autowired
+    private RepositorioUsuario repositorioUsuario;
+
+    @Autowired
+    private UsuarioSelecionador usuarioSelecionador;
+
+    @Autowired
+    private VerificadorPermissao verificadorPermissao;
+
     @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping("/criar")
     public ResponseEntity<?> cadastrarEmpresa(@RequestBody Empresa empresaDados){

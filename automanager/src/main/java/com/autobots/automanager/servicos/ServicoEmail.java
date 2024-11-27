@@ -56,9 +56,9 @@ public class ServicoEmail {
 
     public Email editarEmail(Long id ,Email emailUpdate){
         try {
-            Email email = repositorioEmail.findById(id)
+            Email email = repositorioEmail.findById(emailUpdate.getId())
                     .orElseThrow(() ->{
-                        logger.error("E-mail com id {} não encontrado.", id);
+                        logger.error("E-mail com id {} não encontrado.", emailUpdate.getId());
                         return new EntityNotFoundException("E-mail não encontrado");
                     });
             emailAtualizador.atualizar(email, emailUpdate);

@@ -56,7 +56,7 @@ public class ServicoMercadoria {
 
     public Mercadoria editarMercadoria(Long id, Mercadoria mercadoriaUpdate){
         try {
-            Mercadoria mercadoria = repositorioMercadoria.findById(id)
+            Mercadoria mercadoria = repositorioMercadoria.findById(mercadoriaUpdate.getId())
                     .orElseThrow(() ->{
                         logger.error("Mercadoria com id {} não encontrado.", id);
                         return new EntityNotFoundException("Mercadoria não encontrada");

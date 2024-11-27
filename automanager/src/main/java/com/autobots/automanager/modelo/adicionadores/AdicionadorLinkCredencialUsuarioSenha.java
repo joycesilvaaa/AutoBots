@@ -29,7 +29,7 @@ public class AdicionadorLinkCredencialUsuarioSenha implements AdicionadorLink<Cr
         Link linkProprio = WebMvcLinkBuilder
                 .linkTo(WebMvcLinkBuilder
                         .methodOn(ControleCredencial.class)
-                        .listaCredencialUsuario())
+                        .listagemCredencialUsuario())
                 .withRel("credenciais");
         objeto.add(linkProprio);
     }

@@ -66,10 +66,9 @@ public class ServicoTelefone {
                         logger.error("Empresa com id {} não encontrado.", id);
                         return new EntityNotFoundException("Empresa não encontrada");
                     });
-            Telefone novoTelefone = new Telefone();
-            empresa.getTelefones().add(novoTelefone);
+            empresa.getTelefones().add(telefone);
             repositorioEmpresa.save(empresa);
-            return novoTelefone;
+            return telefone;
         }catch (DataIntegrityViolationException e) {
             logger.error("Erro de integridade de dados ao cadastrar novo telefone: {}", e.getMessage());
             throw e;
@@ -79,11 +78,11 @@ public class ServicoTelefone {
         }
     }
 
-    public Telefone editarTelefone(Long id, Telefone telefoneUpdate){
+    public Telefone editarTelefone(Telefone telefoneUpdate){
         try{
-            Telefone telefone = repositorioTelefone.findById(id)
+            Telefone telefone = repositorioTelefone.findById(telefoneUpdate.getId())
                     .orElseThrow(()->{
-                        logger.error("Telefone com id {} não encontrado.", id);
+                        logger.error("Telefone com id {} não encontrado.");
                         return new EntityNotFoundException("Telefone não encontrada");
                     });
             telefoneAtualizador.atualizar(telefone, telefoneUpdate);

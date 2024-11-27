@@ -2,12 +2,16 @@ package com.autobots.automanager.controle;
 
 import com.autobots.automanager.dto.usuario.CriarUsuarioDto;
 import com.autobots.automanager.entitades.Usuario;
+import com.autobots.automanager.modelo.auth.VerificadorPermissao;
+import com.autobots.automanager.repositorios.RepositorioUsuario;
 import com.autobots.automanager.servicos.ServicoUsuario;
+import com.autobots.automanager.utils.UsuarioSelecionador;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +22,16 @@ public class ControleUsuario {
 
     @Autowired
     private ServicoUsuario servicoUsuario;
+
+    @Autowired
+    private RepositorioUsuario repositorioUsuario;
+
+    @Autowired
+    private UsuarioSelecionador usuarioSelecionador;
+
+    @Autowired
+    private VerificadorPermissao verificadorPermissao;
+
     @PreAuthorize("hasAnyRole('ADMIN','GERENTE','VENDEDOR')")
     @PostMapping("/criar")
     public ResponseEntity<?> cadastrarUsuario(@RequestBody CriarUsuarioDto criarUsuarioDto){
@@ -35,9 +49,17 @@ public class ControleUsuario {
     }
     @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
     @PutMapping("/{id}")
-    public ResponseEntity<?> editarUsuario(@PathVariable Long id, @RequestBody Usuario usuarioUpdate){
+    public ResponseEntity<?> editarUsuario(@PathVariable Long id, @RequestBody Usuario usuarioUpdate, Authentication authentication){
         try {
-            Usuario usuario = servicoUsuario.editarUsuario(id, usuarioUpdate);
+            List<Usuario> usuarios = repositorioUsuario.findAll();
+            String username = authentication.getName();
+            Usuario usuario = usuarioSelecionador.selecionar(usuarios, id);
+            Usuario usuarioLogado = usuarioSelecionador.selecionadorPorUsername(usuarios, username);
+            boolean permissao = verificadorPermissao.verificar(usuarioLogado.getPerfis(),usuario.getPerfis());
+            if (permissao == false) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario não permitido");
+            }
+            Usuario usuarioAtualizado = servicoUsuario.editarUsuario(id, usuarioUpdate);
             return ResponseEntity.status(HttpStatus.OK)
                     .body("Usuario Atualizado");
         } catch (DataIntegrityViolationException e) {
@@ -77,8 +99,16 @@ public class ControleUsuario {
     }
     @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletaUsuario(@PathVariable Long id){
+    public ResponseEntity<?> deletaUsuario(@PathVariable Long id, Authentication authentication){
         try {
+            List<Usuario> usuarios = repositorioUsuario.findAll();
+            String username = authentication.getName();
+            Usuario usuario = usuarioSelecionador.selecionar(usuarios, id);
+            Usuario usuarioLogado = usuarioSelecionador.selecionadorPorUsername(usuarios, username);
+            boolean permissao = verificadorPermissao.verificar(usuarioLogado.getPerfis(),usuario.getPerfis());
+            if (permissao == false) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario não permitido");
+            }
             servicoUsuario.deletarUsuario(id);
             return ResponseEntity.status(HttpStatus.OK)
                     .body("Usuario Excluido");

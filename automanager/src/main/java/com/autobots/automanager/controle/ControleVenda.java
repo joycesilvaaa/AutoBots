@@ -2,11 +2,15 @@ package com.autobots.automanager.controle;
 
 import com.autobots.automanager.dto.venda.VendaDto;
 import com.autobots.automanager.entitades.Venda;
+import com.autobots.automanager.modelo.auth.VerificadorPermissao;
+import com.autobots.automanager.repositorios.RepositorioUsuario;
 import com.autobots.automanager.servicos.ServicoVenda;
+import com.autobots.automanager.utils.UsuarioSelecionador;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +21,15 @@ public class ControleVenda {
 
     @Autowired
     private ServicoVenda servicoVenda;
+    @Autowired
+    private RepositorioUsuario repositorioUsuario;
 
+    @Autowired
+    private UsuarioSelecionador usuarioSelecionador;
+
+    @Autowired
+    private VerificadorPermissao verificadorPermissao;
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR')")
     @PostMapping("/criar")
     public ResponseEntity<?> cadastrarVenda(@RequestBody Venda vendaDados){
         try{
@@ -32,7 +44,7 @@ public class ControleVenda {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN','GERENTE')")
     @PutMapping("/{id}")
     public ResponseEntity<?> editarVenda(@PathVariable Long id,@RequestBody VendaDto vendaUpdate){
         try{
@@ -47,6 +59,7 @@ public class ControleVenda {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE', 'VENDEDOR', 'CLIENTE')")
     @GetMapping("/todas")
     public ResponseEntity<?> listagemVendas(){
         try{
@@ -65,7 +78,7 @@ public class ControleVenda {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     @GetMapping("/{id}")
     public ResponseEntity<?> listaVenda(@PathVariable Long id){
         try{
@@ -80,7 +93,7 @@ public class ControleVenda {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN','GERENTE')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletaVenda(@PathVariable Long id){
         try{

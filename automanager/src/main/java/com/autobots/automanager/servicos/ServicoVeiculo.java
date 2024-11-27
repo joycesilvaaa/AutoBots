@@ -57,9 +57,9 @@ public class ServicoVeiculo {
 
     public Veiculo editarVeiculo(Long id, Veiculo veiculoUpdate){
         try{
-            Veiculo veiculo = repositorioVeiculo.findById(id)
+            Veiculo veiculo = repositorioVeiculo.findById(veiculoUpdate.getId())
                     .orElseThrow(() -> {
-                        logger.error("Veiculo com id {} não encontrado.", id);
+                        logger.error("Veiculo com id {} não encontrado.");
                         return new EntityNotFoundException("Veiculo não encontrada");
                     });
             veiculoAtualizador.atualizar(veiculo, veiculoUpdate);
