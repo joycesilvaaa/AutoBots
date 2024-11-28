@@ -32,6 +32,20 @@ public class ControleVeiculo {
                     .body("Erro inesperado: " + e.getMessage());
         }
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<?> editarVeiculo(@PathVariable Long id, @RequestBody Veiculo veiculoUpdate){
+        try{
+            Veiculo veiculo = servicoVeiculo.editarVeiculo(id, veiculoUpdate);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body("Veiculo Atualizado");
+        }catch (DataIntegrityViolationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Dados inválidos ao deletar veiculo: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro inesperado: " + e.getMessage());
+        }
+    }
 
     @GetMapping("/todos")
     public ResponseEntity<?> listaVeiculo(){
